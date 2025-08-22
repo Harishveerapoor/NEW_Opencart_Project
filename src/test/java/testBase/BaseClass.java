@@ -32,7 +32,7 @@ public class BaseClass {
         logger = LogManager.getLogger(this.getClass());
 
         // Load config.properties
-        FileReader file = new FileReader("./src/test/resources/config.properties");
+      FileReader file=new FileReader("./src//test//resourcess//config.properties");
         p = new Properties();
         p.load(file);
 
