@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
@@ -23,6 +22,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.apache.commons.lang3.RandomStringUtils;
 
 public class BaseClass {
 
@@ -34,17 +34,14 @@ public class BaseClass {
     @Parameters({ "browser" })
     public void setup(String br) throws IOException {
 
-        // Initialize Logger
         logger = LogManager.getLogger(this.getClass());
 
-        // Load config.properties
-        FileReader file = new FileReader("./src//test//resourcess//config.properties");
+        FileReader file = new FileReader("./src/test/resources/config.properties");
         p = new Properties();
         p.load(file);
 
         logger.info("Execution Environment: " + p.getProperty("execution_env"));
 
-        // Local execution
         if (p.getProperty("execution_env").equalsIgnoreCase("local")) {
             switch (br.toLowerCase()) {
                 case "chrome":
@@ -52,6 +49,8 @@ public class BaseClass {
                     ChromeOptions options = new ChromeOptions();
                     options.addArguments("--no-sandbox");
                     options.addArguments("--disable-dev-shm-usage");
+                    options.addArguments("--remote-allow-origins=*");
+                    options.addArguments("--user-data-dir=/tmp/temporary-chrome-profile-" + System.currentTimeMillis());
                     driver = new ChromeDriver(options);
                     break;
 
@@ -74,12 +73,10 @@ public class BaseClass {
             throw new RuntimeException("Unsupported execution_env: " + p.getProperty("execution_env"));
         }
 
-        // Browser setup
         driver.manage().deleteAllCookies();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         driver.manage().window().maximize();
 
-        // Open URL from config
         driver.get(p.getProperty("URL"));
         logger.info("URL launched: " + p.getProperty("URL"));
     }
@@ -109,10 +106,9 @@ public class BaseClass {
         return (genaratedString + genaratedNumaber);
     }
 
-    // --------------- Capture Screenshot ---------------
+    // Capture Screenshot
     public String captureScreen(String tname) throws IOException {
-
-        String timeStamp = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         TakesScreenshot ts = (TakesScreenshot) driver;
         File source = ts.getScreenshotAs(OutputType.FILE);
 
