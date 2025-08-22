@@ -1,4 +1,4 @@
-name: OpenCart Maven Test
+name: OpenCart Maven Tests
 
 on:
   push:
