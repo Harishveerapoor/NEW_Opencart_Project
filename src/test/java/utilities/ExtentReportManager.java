@@ -1,6 +1,5 @@
 package utilities;
 
-
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -23,8 +22,6 @@ import testBase.BaseClass;
 
 public class ExtentReportManager implements ITestListener {
 
-	
-	// ALL part 8
     public ExtentSparkReporter sparkReporter;
     public ExtentReports extent;
     public ExtentTest test;
@@ -32,12 +29,12 @@ public class ExtentReportManager implements ITestListener {
 
     public void onStart(ITestContext testContext) {
 
-        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()); // time stamp
+        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
         repName = "Test-Report-" + timeStamp + ".html";
 
         sparkReporter = new ExtentSparkReporter(System.getProperty("user.dir") + "\\reports\\" + repName);
-        sparkReporter.config().setDocumentTitle("Opencart Automation Report"); // Title of report
-        sparkReporter.config().setReportName("Opencart Functional Testing"); // name of the report
+        sparkReporter.config().setDocumentTitle("Opencart Automation Report");
+        sparkReporter.config().setReportName("Opencart Functional Testing");
         sparkReporter.config().setTheme(Theme.DARK);
 
         extent = new ExtentReports();
@@ -94,31 +91,19 @@ public class ExtentReportManager implements ITestListener {
         String pathOfExtentReport = System.getProperty("user.dir") + "\\reports\\" + repName;
         File extentReport = new File(pathOfExtentReport);
 
-        try {
-            Desktop.getDesktop().browse(extentReport.toURI());
-        } catch (IOException e) {
-            e.printStackTrace();
+        // Open report only on local machine, skip on CI (GitHub Actions, etc.)
+        if (System.getenv("CI") == null) {
+            try {
+                Desktop.getDesktop().browse(extentReport.toURI());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
-        // Send report by email
+        // Send report by email (optional)
         try {
             URL url = new URL("file:///" + System.getProperty("user.dir") + "\\reports\\" + repName);
-
-            // Example (You can replace with JavaMail or Apache Commons Email)
-            /*
-            ImageHtmlEmail email = new ImageHtmlEmail();
-            email.setDataSourceResolver(new DataSourceUrlResolver(url));
-            email.setHostName("smtp.googlemail.com");
-            email.setSmtpPort(465);
-            email.setAuthenticator(new DefaultAuthenticator("yourEmail@gmail.com", "yourPassword"));
-            email.setSSLOnConnect(true);
-            email.setFrom("yourEmail@gmail.com");
-            email.setSubject("Test Results");
-            email.setMsg("Please find attached report....");
-            email.addTo("receiverEmail@gmail.com");
-            email.attach(url, "extent report", "please check report...");
-            email.send();
-            */
+            // Email sending code can go here
         } catch (Exception e) {
             e.printStackTrace();
         }
