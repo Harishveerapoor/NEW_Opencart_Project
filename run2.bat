@@ -1,0 +1,1 @@
+allure serve C:\Batch22\OpenCart_NEW_PROJECT\allure-results

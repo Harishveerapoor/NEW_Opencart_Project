@@ -15,6 +15,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -96,7 +97,13 @@ public Properties p;
 	    }
 	  
 	    
-	    
+		    ChromeOptions options = new ChromeOptions();
+		    options.addArguments("--headless");  // ✅ Run in headless mode
+		    options.addArguments("--no-sandbox");
+		    options.addArguments("--disable-dev-shm-usage");
+
+		    WebDriver driver = new ChromeDriver(options);
+
 	    
 	    
 	    
