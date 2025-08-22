@@ -34,25 +34,19 @@ jobs:
       run: mvn clean install -DskipTests
 
     - name: Run Tests in Headless Mode
-      env:
-        BROWSER: chrome
       run: |
         mvn test -Dheadless=true
 
-    - name: Archive Test Reports
+    - name: Archive Surefire Test Reports
       uses: actions/upload-artifact@v4
       with:
         name: test-reports
         path: target/surefire-reports/
 
-    - name: Archive Screenshots
+    - name: Archive Extent Reports & Screenshots
       uses: actions/upload-artifact@v4
       with:
-        name: screenshots
+        name: extent-reports
         path: reports/
 
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshots
-          path: screenshots/
 
