@@ -1,4 +1,4 @@
-name: Selenium Headless Tests
+name: OpenCart Maven Tests
 
 on:
   push:
@@ -9,27 +9,48 @@ on:
       - master
 
 jobs:
-  run-tests:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 17
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: temurin
 
-      - name: Set headless execution
-        run: echo "execution_env=remote" >> $GITHUB_ENV
+    - name: Cache Maven packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
 
-      - name: Run Maven tests
-        run: mvn clean test
+    - name: Install dependencies
+      run: mvn clean install -DskipTests
 
-      - name: Upload screenshots
-        if: success() || failure()
+    - name: Run Tests in Headless Mode
+      env:
+        BROWSER: chrome
+      run: |
+        mvn test -Dheadless=true
+
+    - name: Archive Test Reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-reports
+        path: target/surefire-reports/
+
+    - name: Archive Screenshots
+      uses: actions/upload-artifact@v4
+      with:
+        name: screenshots
+        path: reports/
+
         uses: actions/upload-artifact@v4
         with:
           name: screenshots
