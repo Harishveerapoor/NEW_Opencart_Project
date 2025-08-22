@@ -1,4 +1,4 @@
-name: Java Maven Selenium Tests
+name: Selenium Headless Tests
 
 on:
   push:
@@ -9,42 +9,33 @@ on:
       - master
 
 jobs:
-  selenium-tests:
+  run-tests:
     runs-on: ubuntu-latest
 
     steps:
       # Step 1: Checkout the repo
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Set up Java
+      # Step 2: Set up Java (JDK 17)
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 17
 
-      # Step 3: Install Chrome
-      - name: Install Chrome
-        run: |
-          sudo apt update
-          sudo apt install -y wget unzip
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt --fix-broken install -y
-
-      # Step 4: Install ChromeDriver
-      - name: Install ChromeDriver
-        run: |
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-          wget https://chromedriver.storage.googleapis.com/$CHROME_VERSION/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/bin/chromedriver
-          sudo chmod +x /usr/bin/chromedriver
-
-      # Step 5: Set environment variable for headless execution
-      - name: Set headless execution env
+      # Step 3: Set environment variable for headless execution
+      - name: Set execution environment
         run: echo "execution_env=remote" >> $GITHUB_ENV
 
-      # Step 6: Build and run tests with Maven
+      # Step 4: Build and run Maven tests
       - name: Run Maven tests
         run: mvn clean test
+
+      # Step 5: Upload screenshots as artifacts (optional)
+      - name: Upload screenshots
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/
