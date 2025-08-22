@@ -14,7 +14,7 @@ jobs:
 
     steps:
       # Step 1: Checkout the repository
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       # Step 2: Set up Java (JDK 17)
@@ -24,8 +24,8 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      # Step 3: Set execution environment for headless mode
-      - name: Set execution environment
+      # Step 3: Set environment variable for headless execution
+      - name: Set headless execution
         run: echo "execution_env=remote" >> $GITHUB_ENV
 
       # Step 4: Build and run Maven tests
