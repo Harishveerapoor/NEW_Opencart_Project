@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repo
+      # Step 1: Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -24,7 +24,7 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      # Step 3: Set environment variable for headless execution
+      # Step 3: Set execution environment for headless mode
       - name: Set execution environment
         run: echo "execution_env=remote" >> $GITHUB_ENV
 
@@ -32,10 +32,11 @@ jobs:
       - name: Run Maven tests
         run: mvn clean test
 
-      # Step 5: Upload screenshots as artifacts (optional)
+      # Step 5: Upload screenshots as artifacts
       - name: Upload screenshots
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: screenshots
           path: screenshots/
+
