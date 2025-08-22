@@ -13,34 +13,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Java 17
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 17
 
-      # Step 3: Install Google Chrome (latest stable)
-      - name: Install Google Chrome
-        run: |
-          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-          sudo apt update
-          sudo apt install -y google-chrome-stable
-
-      # Step 4: Set environment variable for headless Chrome
       - name: Set headless execution
         run: echo "execution_env=remote" >> $GITHUB_ENV
 
-      # Step 5: Run Maven tests
       - name: Run Maven tests
         run: mvn clean test
 
-      # Step 6: Upload screenshots (if any)
       - name: Upload screenshots
         if: success() || failure()
         uses: actions/upload-artifact@v4
